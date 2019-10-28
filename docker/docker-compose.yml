@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  service:
+    build:
+      context: dockerfile/service
+    depends_on:
+      - db
+    ports:
+      - "10022:22"
+      - "10080:80"
+    volumes:
+      - ../:/var/www/symfony
+      - ~/.ssh:/root/.ssh
+#    environment:
+#      XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1"
+#      PHP_IDE_CONFIG: "serverName=Docker"
+#      TODO:: перенести сюда подключение к БД
+  db:
+    image: mysql:5.7.26
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - "10006:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+volumes:
+  db_data: {}
